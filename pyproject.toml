@@ -2,7 +2,7 @@
 name = "git for lessons"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["Alina <kid_cudi96@mail.ru>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
