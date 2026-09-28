@@ -1,5 +1,3 @@
-from typing import Iterable
-
 def filter_by_state(data: list[dict], state: str = "EXECUTED") -> list[dict]:
     # Функция фильтрации операций по статусу операций
     new_list_keys = []
