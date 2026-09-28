@@ -1,6 +1,6 @@
-from typing import List, Dict, Any
+from typing import Iterable
 
-def filter_by_state(data:List[Dict[str, Any]], state: str = "EXECUTED") -> List[Dict[str, Any]]:
+def filter_by_state(data: list[dict], state: str = "EXECUTED") -> list[dict]:
     # Функция фильтрации операций по статусу операций
     new_list_keys = []
     for items in data:
@@ -9,7 +9,7 @@ def filter_by_state(data:List[Dict[str, Any]], state: str = "EXECUTED") -> List[
     return new_list_keys
 
 
-def sort_by_date(data: List[Dict[str, Any]], reverse: bool = True) -> List[Dict[str, Any]]:
+def sort_by_date(data: list[dict], reverse: bool = True) -> list[dict]:
     # Функция сортировки операций по датам
     new_list_dates = []
     for items in data:
