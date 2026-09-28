@@ -4,11 +4,11 @@ from src.masks import get_mask_account, get_mask_card_number
 def mask_account_card(card_account_number: str) -> str:
     """Функция скрывающая часть номера карты или счета"""
     card_type, card_number = card_account_number.rsplit(" ", 1)
-    if "счет" in card_type.lower():
+    if len(card_number) < 16:
+        return "Ошибка"
+    elif "счет" in card_type.lower():
         masks = get_mask_account(card_number)
         return f"{card_type} {masks}"
-    elif len(card_number) != 16:
-        return "Ошибка"
     else:
         masks = get_mask_card_number(card_number)
         return f"{card_type} {masks}"
