@@ -1,3 +1,6 @@
+import json
+from typing import Any, Dict
+
 import pytest
 
 
@@ -75,3 +78,49 @@ def sample_transactions():
             "to": "Счет 14211924144426031657",
         },
     ]
+
+
+# Фикстура для модуля utils.py и external_api
+
+
+@pytest.fixture
+def valid_rub_transaction() -> Dict[str, Any]:
+    """Возвращает валидную транзакцию в рублях."""
+    return {"id": 1, "operationAmount": {"amount": "500.50", "currency": {"code": "RUB"}}}
+
+
+@pytest.fixture
+def valid_usd_transaction() -> Dict[str, Any]:
+    """Возвращает валидную транзакцию в долларах."""
+    return {"id": 2, "operationAmount": {"amount": "10.5", "currency": {"code": "USD"}}}
+
+
+@pytest.fixture
+def valid_eur_transaction() -> Dict[str, Any]:
+    """Возвращает валидную транзакцию в евро."""
+    return {"id": 3, "operationAmount": {"amount": "5.5", "currency": {"code": "EUR"}}}
+
+
+@pytest.fixture
+def invalid_transaction_structure() -> Dict[str, Any]:
+    """Возвращает невалидную транзакцию (пустой объект)."""
+    return {}
+
+
+@pytest.fixture
+def temp_json_file() -> str:
+    """
+    Создает временный файл в текущей директории.
+    Имя файла фиксированное, удаление происходит вручную в тесте.
+    """
+    file_name = "temp_test.json"
+    data = [
+        {"id": 1, "operationAmount": {"amount": "100", "currency": {"code": "RUB"}}},
+        {},
+        {"id": 2, "operationAmount": {"amount": "200", "currency": {"code": "USD"}}},
+    ]
+
+    with open(file_name, "w", encoding="utf-8") as f:
+        json.dump(data, f)
+
+    return file_name
