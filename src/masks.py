@@ -1,7 +1,7 @@
 import logging
 from typing import Final
 
-from logging_config import setup_logger
+from src.logging_config import setup_logger
 
 # Пути к логам
 LOG_FILE_MASKS: Final[str] = "logs/masks.log"

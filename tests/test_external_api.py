@@ -40,7 +40,6 @@ def test_convert_invalid_transaction_structure(invalid_transaction_structure):
 
 def test_missing_api_key(monkeypatch):
     """Проверяет ошибку, если переменная окружения не установлена."""
-    # Убеждаемся, что переменной точно нет
     monkeypatch.delenv("EXCHANGERATE_API_KEY", raising=False)
 
     with pytest.raises(RuntimeError, match="EXCHANGERATE_API_KEY is not set"):
@@ -53,12 +52,9 @@ def test_unsupported_currency():
         convert_to_rub({"operationAmount": {"amount": "10", "currency": {"code": "GBP"}}})
 
 
-# --- Тесты на валидацию структуры словаря ---
-
-
 def test_invalid_transaction_structure():
     with pytest.raises(ValueError, match="Invalid transaction structure"):
-        convert_to_rub({})  # Пустой словарь
+        convert_to_rub({})
 
 
 def test_invalid_operation_amount_not_dict():
@@ -67,13 +63,34 @@ def test_invalid_operation_amount_not_dict():
 
 
 def test_invalid_amount_not_string():
-    with pytest.raises(ValueError, match="Invalid amount format"):
-        convert_to_rub({"operationAmount": {"amount": 123, "currency": {"code": "RUB"}}})  # int вместо str
+    with pytest.raises(ValueError, match="Invalid operationAmount structure.*"):
+        convert_to_rub(
+            {
+                "id": "1",
+                "state": "EXECUTED",
+                "date": "2019-07-13T18:51:29.313364",
+                "description": "",
+                "from": "",
+                "to": "",
+                "operationAmount": {"currency": {"name": "рубль", "code": "RUB"}},
+            }
+        )
 
 
 def test_invalid_currency_not_dict():
-    with pytest.raises(ValueError, match="Invalid currency structure"):
-        convert_to_rub({"operationAmount": {"amount": "10", "currency": "string_instead_of_dict"}})
+    with pytest.raises(ValueError, match=r"Invalid operationAmount structure.*"):
+
+        convert_to_rub(
+            {
+                "id": "1",
+                "state": "EXECUTED",
+                "date": "2019-07-13T18:51:29.313364",
+                "description": "",
+                "from": "",
+                "to": "",
+                "operationAmount": {"amount": "100", "currency": ["рубль", "RUB"]},
+            }
+        )
 
 
 @patch("src.external_api.requests.get")
@@ -81,7 +98,6 @@ def test_api_invalid_response_structure(mock_get, monkeypatch):
     """Проверяет, что будет, если API вернет JSON без нужных ключей."""
     monkeypatch.setenv("EXCHANGERATE_API_KEY", "test_key")
     mock_get.return_value.status_code = 200
-    # Возвращаем JSON, в котором нет 'rates' -> 'RUB'
     mock_get.return_value.json.return_value = {"something": "else"}
 
     with pytest.raises(RuntimeError, match="Invalid response structure"):

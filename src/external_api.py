@@ -51,7 +51,6 @@ def convert_to_rub(transaction: Dict[str, Any]) -> float:
     if currency not in ["USD", "EUR"]:
         raise ValueError(f"Unsupported currency: {currency}")
 
-    # Читаем ключ здесь, чтобы тесты могли подменить env через monkeypatch после импорта модуля
     api_key = os.getenv("EXCHANGERATE_API_KEY")
     if not api_key:
         raise RuntimeError("EXCHANGERATE_API_KEY is not set in environment variables")

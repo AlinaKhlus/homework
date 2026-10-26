@@ -1,8 +1,9 @@
 import json
 import logging
 import os
-from typing import List, Dict, Any, Final
-from logging_config import setup_logger
+from typing import Any, Dict, Final, List
+
+from src.logging_config import setup_logger
 
 LOG_FILE_UTILS: Final[str] = "logs/utils.log"
 logger: Final[logging.Logger] = setup_logger("utils", LOG_FILE_UTILS)
