@@ -1,8 +1,10 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 import pytest
 
-from src.transaction_reader import read_financial_operations_from_csv, read_financial_operations_from_excel
+from src.transaction_reader import read_financial_operations_from_csv
+from src.transaction_reader import read_financial_operations_from_excel
 
 
 @pytest.fixture
