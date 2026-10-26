@@ -1,6 +1,11 @@
 import json
+import logging
 import os
-from typing import Any, Dict, List
+from typing import List, Dict, Any, Final
+from logging_config import setup_logger
+
+LOG_FILE_UTILS: Final[str] = "logs/utils.log"
+logger: Final[logging.Logger] = setup_logger("utils", LOG_FILE_UTILS)
 
 
 def read_json_file(file_path: str) -> List[Dict[str, Any]]:
@@ -16,19 +21,24 @@ def read_json_file(file_path: str) -> List[Dict[str, Any]]:
     :return: Список словарей с транзакциями.
     """
     if not os.path.exists(file_path):
+        logger.warning(f"Файл не найден: {file_path}. Возвращается пустой список.")
         return []
 
     try:
         with open(file_path, "r", encoding="utf-8") as file:
             content = file.read().strip()
             if not content:
+                logger.info(f"Файл пуст: {file_path}. Возвращается пустой список.")
                 return []
 
             data = json.loads(content)
             if not isinstance(data, list):
+                logger.error(f"Ожидался список в файле {file_path}, но получен тип {type(data)}.")
                 return []
 
-            # Фильтрация: оставляем только непустые словари
-            return [item for item in data if isinstance(item, dict) and item]
-    except (json.JSONDecodeError, OSError):
+            valid_items = [item for item in data if isinstance(item, dict) and item]
+            logger.info(f"Файл {file_path} успешно прочитан. Найдено валидных записей: {len(valid_items)}.")
+            return valid_items
+    except (json.JSONDecodeError, OSError) as e:
+        logger.error(f"Ошибка чтения или парсинга файла {file_path}: {e}", exc_info=True)
         return []
