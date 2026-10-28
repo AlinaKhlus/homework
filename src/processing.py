@@ -1,3 +1,9 @@
+from collections import Counter
+from typing import Any
+from typing import Dict
+from typing import List
+
+
 def filter_by_state(data: list[dict], state: str = "EXECUTED") -> list[dict]:
     # Функция фильтрации операций по статусу операций
     new_list_keys = []
@@ -38,3 +44,28 @@ print(
         ]
     )
 )
+
+
+def count_operations_by_categories(data: List[Dict[str, Any]], categories: List[str]) -> Dict[str, int]:
+    """
+    Подсчитывает количество операций для каждой заданной категории.
+    Категория определяется по вхождению ключевого слова в описание (без учета регистра).
+
+    :param data: Список словарей с транзакциями.
+    :param categories: Список категорий (ключевых слов), например ["Перевод", "Открытие", "Оплата"].
+    :return: Словарь, где ключи — названия категорий, значения — количество операций.
+    """
+    # Приводим категории к нижнему регистру для регистронезависимого поиска
+    normalized_categories = [cat.lower() for cat in categories]
+
+    # Собираем названия категорий, которые встретились в описаниях
+    found_categories = []
+    for transaction in data:
+        description = transaction.get("description", "").lower()
+        for cat in normalized_categories:
+            if cat in description:
+                # Возвращаем оригинальное название категории из входного списка
+                found_categories.append(categories[normalized_categories.index(cat)])
+                break
+
+    return dict(Counter(found_categories))

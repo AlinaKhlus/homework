@@ -227,3 +227,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 data/
+*.pyc
+logs/
+.pytest_cache/
+*.db
